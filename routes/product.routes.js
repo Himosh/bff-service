@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get('/', ProductController.getAllProducts);
 router.get('/category', ProductController.getProductsByCategory);
+router.get('/search-by-category-id', ProductController.getProductsByCategoryId);
 router.get('/:productId', ProductController.getProductById);
 router.get('/search-by-product-name', ProductController.searchProductsByProductName);
 router.post('/create-catalog-request', ProductController.createProductCatalogRequest);

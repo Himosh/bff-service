@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { PRODUCT_SERVICE_URL } = require('../config/services');
+const {getProductsByCategory} = require("../controllers/product.controller");
 
 exports.getAllProducts = (page, size) => {
     return axios.get(`${PRODUCT_SERVICE_URL}/api/v1/products`, {
@@ -12,6 +13,14 @@ exports.getProductsByCategory = (category, page, size) => {
         params: { category, page, size }
     });
 };
+
+// Function to call Spring Boot service
+exports.fetchProductsByCategoryId = (categoryId, page, size) => {
+    return axios.get(`${PRODUCT_SERVICE_URL}/api/v1/products/search-by-category-id`, {
+        params: { categoryId, page, size }
+    });
+};
+
 
 exports.getProductById = (productId) => {
     return axios.get(`${PRODUCT_SERVICE_URL}/api/v1/products/${productId}`);

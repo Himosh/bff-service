@@ -1,4 +1,5 @@
 const ProductService = require('../services/product.service');
+const ProductCategoryService = require('../services/productCategory.service');
 
 exports.getAllProducts = async (req, res, next) => {
     try {
@@ -24,9 +25,51 @@ exports.getProductsByCategory = async (req, res, next) => {
 exports.getProductById = async (req, res, next) => {
     try {
         const { productId } = req.params;
-        const response = await ProductService.getProductById(productId);
+
+        const productResponse = await ProductService.getProductById(productId);
+
+        const product = productResponse.data;
+
+        if (!product) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+
+        const categoryResponse = await ProductCategoryService.getAllCategories();
+        const category = categoryResponse.data.find((cat) => cat.id === product.categoryId);
+
+        const productWithCategoryName = {
+            ...product,
+            categoryName: category ? category.name : "Unknown Category",
+        };
+
+        res.status(200).json(productWithCategoryName);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+exports.getProductsByCategoryId = async (req, res, next) => {
+    try {
+        // Extract query parameters
+        const { categoryId } = req.query; // 'categoryId' as string from the query
+        const { page = 0, size = 10 } = req.query;
+
+        // Log incoming query parameters for debugging
+        console.log("Received categoryId:", categoryId);
+        console.log("Received page:", page);
+        console.log("Received size:", size);
+
+        // Validate required 'categoryId'
+        if (!categoryId) {
+            return res.status(400).json({ error: 'categoryId is required' });
+        }
+
+        // Ensure 'categoryId' is forwarded correctly to Spring Boot
+        const response = await ProductService.fetchProductsByCategoryId(categoryId, page, size)
         res.status(200).json(response.data);
     } catch (error) {
+        console.error("Error forwarding request to Spring Boot service:", error.message);
         next(error);
     }
 };
