@@ -17,8 +17,8 @@ app.use(bodyParser.json());
 app.use('/bff/auth', authRoutes);
 app.use('/bff/products', productRoutes);
 app.use('/bff/product-category', productCategoryRoutes);
-app.use('/api/v1/order', orderRoutes);
-app.use('/api/v1/cart', cartRoutes);
+app.use('/bff/order', orderRoutes);
+app.use('/bff/cart', cartRoutes);
 
 
 // Error Handling Middleware
